@@ -1,0 +1,29 @@
+---
+title: "Sanggala Corridor Project"
+subtitle: "Rapid Survey T=0 ARR Dashboard"
+author: "Syuryadi Wijaya"
+format: 
+  dashboard:
+    theme: flatly
+    orientation: rows
+execute:
+  echo: true       
+  code-fold: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+# Read script 
+source("01 - Rapid Survey Analysis (Land cover).R")
+
+# Memastikan plotly tersedia untuk mengubah ggplot menjadi grafik interaktif (hover/zoom)
+if (!require("plotly"))
+  install.packages("plotly")
+library(plotly)
+```
+
+# 
