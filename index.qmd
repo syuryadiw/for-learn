@@ -15,15 +15,17 @@ execute:
   message: false
 ---
 
-```{quarto{r}
+```{r}
 #| label: setup
 #| include: false
 
-# Memanggil script backend
-source("01 - Rapid Survey Analysis (Land cover).R")
-
-if (!require("plotly")) install.packages("plotly")
+# 1. Panggil library dan package terlebih dahulu
+library(dplyr)
+library(tidyverse)
 library(plotly)
+
+# 2. Baru panggil script backend di bagian bawah
+source("01 - Rapid Survey Analysis (Land cover).R")
 ```
 
 # Analisis Statistik  {icon="bar-chart-fill"}
@@ -34,16 +36,18 @@ library(plotly)
 
 ```{r}
 #| title: "Distribusi Tutupan Lahan"
-ggplotly(plot_landcover, tooltip = c("y", "fill")) %>%
-  layout(margin = list (b=40))
+p1 <- ggplotly(plot_landcover, tooltip = c("y", "fill"))
+p1$x$layout$margin$b <- 40
+p1
 ```
 
 ### Column  {width="50%"}
 
 ```{r}
 #| title: "Status Pengelolaan Lahan"
-ggplotly(plot_status_lahan, tooltip = c("y", "fill")) %>%
-  layout(showlegend = FALSE)
+p2 <- ggplotly(plot_status_lahan, tooltip = c("y", "fill"))
+p2 <- layout(p2, showlegend = FALSE)
+p2
 ```
 
 ## Row  {height="45%"}
@@ -52,8 +56,9 @@ ggplotly(plot_status_lahan, tooltip = c("y", "fill")) %>%
 
 ```{r}
 #| title: "Top 10 Vegetasi Dominan"
-ggplotly(plot_vegetation, tooltip = c("x", "y")) %>%
-  layout(showlegend = FALSE)
+p3 <- ggplotly(plot_vegetation, tooltip = c("x", "y"))
+p3 <- layout(p3, showlegend = FALSE)
+p3
 ```
 
 # Pemetaan Spasial  {icon="map-fill"}
@@ -63,6 +68,6 @@ ggplotly(plot_vegetation, tooltip = c("x", "y")) %>%
 ### Column
 
 ```{r}
-#| title: "Peta Interaktif LULC 2025 & Ground Thruting ODK"
+#| title: "Peta Ground Check Land Cover - 2026"
 peta_spasial
 ```
