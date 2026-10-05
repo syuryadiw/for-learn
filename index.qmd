@@ -4,11 +4,12 @@ subtitle: "Rapid Survey T=0 ARR Dashboard"
 author: "Syuryadi Wijaya"
 format: 
   dashboard:
-    theme: flatly
+    theme: cosmo
     orientation: rows
     nav-buttons:
       - icon: github
         href: https://github.com/
+    css: style.css 
 execute:
   echo: false
   warning: false
