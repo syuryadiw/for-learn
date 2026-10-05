@@ -1,0 +1,28 @@
+/* Mengubah warna latar belakang navbar utama menjadi hijau gelap earth-tone */
+.navbar, .quarto-dashboard .navbar {
+  background-color: #2D6A4F !important;
+  border-bottom: 2px solid #52B788 !important;
+}
+
+/* Warna latar belakang keseluruhan halaman dashboard */
+body, .quarto-dashboard {
+  background-color: #F8F9FA;
+  color: #2C3E50;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Mengatur kotak kartu (card) grafik agar memiliki border lembut & bayangan estetik */
+.card {
+  border: 1px solid #E9ECEF !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  background-color: #FFFFFF;
+}
+
+/* Judul card di dalam dashboard */
+.card-header {
+  background-color: #F1F3F5 !important;
+  font-weight: bold;
+  color: #2D6A4F !important;
+  border-bottom: 1px solid #E9ECEF !important;
+}
