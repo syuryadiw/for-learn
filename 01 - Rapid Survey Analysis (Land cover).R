@@ -5,8 +5,15 @@
 # 1. ENVIRONMENT SETUP ----
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
-  googlesheets4, tidyverse, viridis, scales, 
-  leaflet, writexl, ggplot2, sf, leaflet.extras
+  googlesheets4, 
+  tidyverse, 
+  viridis, 
+  scales, 
+  leaflet, 
+  writexl, 
+  ggplot2, 
+  sf, 
+  leaflet.extras
 )
 
 theme_set(
@@ -99,81 +106,128 @@ table_status_lahan <- clean_data %>%
 # 4.1 Plot Land Cover ----
 plot_landcover <- clean_data %>%
   count(Desa, `Land Cover`) %>%
-  ggplot(aes(x = fct_reorder(`Land Cover`, n, .fun = sum), y = n, fill = Desa)) +
-  geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+  ggplot(aes(x = fct_reorder(`Land Cover`, n, .fun = sum), 
+             y = n, 
+             fill = Desa)) +
+  geom_col(position = "stack", 
+           width = 0.7, 
+           color = "white", 
+           linewidth = 0.2) +
   geom_text(aes(label = ifelse(n > 0, n, "")), 
             position = position_stack(vjust = 0.5), 
-            color = "white", size = 3, fontface = "bold") +
+            color = "white", 
+            size = 3, 
+            fontface = "bold") +
   coord_flip() +
-  scale_fill_viridis_d(option = "plasma", begin = 0.2, end = 0.8) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  scale_fill_viridis_d(option = "plasma", 
+                       begin = 0.2, 
+                       end = 0.8) +
   labs(
     title    = "Distribusi Tutupan Lahan (Land Cover)", 
     subtitle = "Sanggala Corridor Project - Rapid Survey 2026", 
     x        = "Land Cover", 
-    y        = "Total Points"
+    y        = "Total Sampling Points"
+  ) +
+  theme(
+    axis.text.y  = element_text(size = 10, face = "bold", color = "gray20"),
+    axis.text.x  = element_text(size = 9, color = "gray30"),
+    axis.title.y = element_text(size = 10, face = "bold", angle = 0, hjust = 1, vjust = 0.5),
+    panel.grid.major.y = element_blank(),
+    plot.title   = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(color = "gray40", size = 9)
   )
+plot_landcover
 
 # 4.2 Plot Top 10 Dominant Vegetation ----
 plot_vegetation <- clean_data %>%
   filter(Vegetasi_Clean != "Unidentified") %>%
-  count(Vegetasi_Clean) %>%
+  count(Vegetasi_Clean, name = "n") %>%
   slice_max(n, n = 10) %>%
-  ggplot(aes(x = reorder(Vegetasi_Clean, n), y = n, fill = n)) +
-  geom_col(width = 0.65, show.legend = FALSE) +
-  geom_text(aes(label = n), hjust = -0.3, size = 3.5, fontface = "bold") +
+  ggplot(aes(x = reorder(Vegetasi_Clean, n), 
+             y = n, 
+             fill = n)) +
+  geom_col(width = 0.65, 
+           show.legend = FALSE) +
+  geom_text(aes(label = n), 
+            hjust = -0.4, 
+            size = 3.5, 
+            fontface = "bold") +
   coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
-  scale_fill_viridis_c(option = "turbo", begin = 0.3, end = 0.8) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  scale_fill_viridis_c(option = "turbo", 
+                       begin = 0.3, 
+                       end = 0.8) +
   labs(
     title    = "Top 10 Vegetasi Dominan",
     subtitle = "Sanggala Corridor Project - Rapid Survey 2026",
     x        = "Jenis Vegetasi",
     y        = "Frekuensi Titik Sampling"
+  ) +  
+  theme(
+    axis.text.y  = element_text(size = 10, face = "bold", color = "gray20"),
+    axis.text.x  = element_text(size = 9, color = "gray30"),
+    axis.title.y = element_text(size = 10, face = "bold", angle = 0, hjust = 1, vjust = 0.5),
+    panel.grid.major.y = element_blank(),
+    plot.title   = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(color = "gray40", size = 9)
   )
+plot_vegetation
 
 # 4.3 Plot Status Pengelolaan Lahan ----
 plot_status_lahan <- clean_data %>%
-  count(`Status Lahan`) %>%
-  ggplot(aes(x = reorder(`Status Lahan`, n), y = n, fill = `Status Lahan`)) +
-  geom_col(show.legend = FALSE) +
-  geom_text(aes(label = n), hjust = -0.2, fontface = "bold", size = 4) +
+  count(`Status Lahan`, name = "n") %>%
+  ggplot(aes(x = reorder(`Status Lahan`, n), 
+             y = n, 
+             fill = `Status Lahan`)) +
+  geom_col(show.legend = FALSE, width = 0.65) +
+  geom_text(aes(label = n), 
+            hjust = -0.4, 
+            fontface = "bold", 
+            size = 4) +
   coord_flip() +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
-  scale_fill_viridis_d(option = "plasma", begin = 0.2, end = 0.8) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  scale_fill_viridis_d(option = "plasma", 
+                       begin = 0.2, 
+                       end = 0.8) +
   labs(
     title    = "Status Pengelolaan Lahan",
     subtitle = "Sanggala Corridor Project - Rapid Survey 2026",
-    x        = "Status Lahan",
     y        = "Total Sampling Points"
+  ) +  
+  theme(
+    axis.text.y  = element_text(size = 10, face = "bold", color = "gray20"),
+    axis.text.x  = element_text(size = 9, color = "gray30"),
+    axis.title.y = element_text(size = 10, face = "bold", angle = 0, hjust = 1, vjust = 0.5),
+    panel.grid.major.y = element_blank(),
+    plot.title   = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(color = "gray40", size = 9)
   )
+plot_status_lahan
 
 # 4.4 Interactive Spatial Map (Leaflet) ----
-# 4.4.1 Land use and land cover layer ----
 nama_kolom_lulc <- "Class"
 
-# Tentukan warna secara eksplisit untuk tiap kelas LULC (Manual Mapping)
 warna_lulc <- c(
-  "Building"                  = "#9E9E9E", # Abu-abu
-  "Cleared / Bare Land"       = "#D7CCC8", # Cokelat Pudar
-  "Cleared for Oil Palm"      = "#FFCC80", # Orange Muda
-  "Forest"                    = "#228B22", # Hijau Pekat
-  "Mixed Dryland Agriculture" = "#8BC34A", # Hijau Muda
-  "Newly-planted Oil Palm"    = "#FF9800", # Orange Terang
-  "Oil Palm"                  = "#D32F2F", # Merah
-  "Old Shrubs"                = "#CDDC39", # Hijau Kekuningan
-  "Road"                      = "#424242", # Abu-abu Tua / Aspal
-  "Shrubs"                    = "#C0CA33", # Hijau Zaitun
-  "Water"                     = "#29B6F6"  # Biru Air
+  "Building"                  = "#9E9E9E",
+  "Cleared / Bare Land"       = "#D7CCC8",
+  "Cleared for Oil Palm"      = "#FFCC80",
+  "Forest"                    = "#228B22",
+  "Mixed Dryland Agriculture" = "#8BC34A",
+  "Newly-planted Oil Palm"    = "#FF9800",
+  "Oil Palm"                  = "#D32F2F",
+  "Old Shrubs"                = "#CDDC39",
+  "Road"                      = "#424242",
+  "Shrubs"                    = "#C0CA33",
+  "Water"                     = "#29B6F6"
 )
 
-# Masukkan ke dalam fungsi pembuat palet Leaflet
 pal_lulc_shp <- colorFactor(
   palette = warna_lulc,
   domain  = sf_lulc_2025[[nama_kolom_lulc]],
-  levels  = names(warna_lulc) # Mengunci urutan legenda sesuai daftar di atas
+  levels  = names(warna_lulc)
 )
 
-# 4.4.2 Waypoint layer ----
 pal_map <- colorFactor(viridis_pal(
   option = "inferno", 
   begin  = 0.3,
@@ -184,7 +238,6 @@ peta_spasial <- leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery, group = "Satelit") %>%
   addProviderTiles(providers$OpenStreetMap, group = "Peta Jalan") %>%
   
-  # Layer 1: Land use and land cover (SHP 2025)
   addPolygons(
     data        = sf_lulc_2025,
     fillColor   = ~pal_lulc_shp(get(nama_kolom_lulc)),
@@ -195,7 +248,6 @@ peta_spasial <- leaflet() %>%
     group       = "Peta LULC (2025)" 
   ) %>%
   
-  # Layer 2: Petak kerja
   addPolygons(
     data        = sf_cmi_petak,
     color       = "#8FBC8F", 
@@ -207,7 +259,6 @@ peta_spasial <- leaflet() %>%
     group       = "Petak Kerja CMI"
   ) %>%
   
-  # Layer 3: Boundaries
   addPolygons(
     data        = sf_cmi_outline,
     color       = "#E07A5F", 
@@ -216,7 +267,6 @@ peta_spasial <- leaflet() %>%
     group       = "Batas Luar Konsesi"
   ) %>%
   
-  # Layer 4: Finding Survey
   addCircleMarkers(
     data        = clean_data,
     lng         = ~Longitude, 
@@ -234,21 +284,18 @@ peta_spasial <- leaflet() %>%
     group       = "Titik Survei"
   ) %>%
   
-  # Legend 1: Titik Survei ODK
   addLegend("bottomright", 
             pal     = pal_map, 
             values  = clean_data$`Land Cover`, 
             title   = "Land Cover (Titik Survei)", 
             opacity = 0.9) %>%
   
-  # Legend 2: Poligon LULC 2025
   addLegend("bottomleft", 
             pal     = pal_lulc_shp, 
             values  = names(warna_lulc), 
             title   = "Kelas LULC (2025)", 
             opacity = 0.8) %>%
   
-  # Layer Control
   addLayersControl(
     baseGroups    = c("Satelit", "Peta Jalan"), 
     overlayGroups = c("Peta LULC (2025)", "Batas Luar Konsesi", 
@@ -258,7 +305,6 @@ peta_spasial <- leaflet() %>%
   
   addMeasure(primaryLengthUnit   = "meters", 
              primaryAreaUnit     = "hectares")
-
 peta_spasial
 
 # 5. EXPORT ----
